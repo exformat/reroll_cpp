@@ -1,9 +1,9 @@
-#define SMT_SRT = 2
-#define SMT_STP = 2
+#ifndef DriveControl_h
+#define DriveControl_h
 
 class DriveControl{
 	private:
-		int pin;
+		int _pin;
 	
 	
 	public:
@@ -20,3 +20,4 @@ class DriveControl{
 		void smooth_accel_drive(int, int);
 		void set_pin(int);
 };
+#endif
