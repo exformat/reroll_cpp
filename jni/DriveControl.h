@@ -1,14 +1,16 @@
 #ifndef DriveControl_h
 #define DriveControl_h
+#include "Arduino.h"
 
 class DriveControl{
 	private:
 		int _pin;
-	
+		int _rpm = 0;
+		int _srt_drv_val = 0;
 	
 	public:
 		DriveControl();
-		DriveControl(int);
+		DriveControl(int, int);
 		void tick();
 		void stop_drive();
 		void start_drive();
