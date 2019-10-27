@@ -16,13 +16,15 @@ void DriveControl::stop_drive(){
 }
 
 void DriveControl::start_drive(){
-	analogWrite(_pin, 40);
-	_rpm = 40;
+	_rpm = _srt_drv_val;
+	analogWrite(_pin, _rpm);
 }
 
 void DriveControl::accel_drive(int accel){
-	_rpm += accel;
-	analogWrite(_pin, _rpm);
+	if(_rpm < 255){
+		_rpm += accel;
+		analogWrite(_pin, _rpm);
+	}
 }
 
 void DriveControl::smooth_start_drive(){}
