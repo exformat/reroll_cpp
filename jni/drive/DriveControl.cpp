@@ -1,5 +1,5 @@
 #include "DriveControl.h"
-#include "arduino/Arduino.h"
+#include "Arduino.h"
 
 DriveControl::DriveControl(){}
 DriveControl::DriveControl(int pin, int start_drive_value){
@@ -21,7 +21,7 @@ void DriveControl::start_drive(){
 }
 
 void DriveControl::accel_drive(int accel){
-	if(_rpm < 255){
+	if(_rpm < 255 && _rpm > 0){
 		_rpm += accel;
 		analogWrite(_pin, _rpm);
 	}
