@@ -1,9 +1,9 @@
 #include <iostream>
-#include "DriveControl.h"
+//#include "DriveControl.h"
 using namespace std;
 
 int main()
 {
-	DriveControl driveTest();
+	//DriveControl driveTest();
 	cout << "Hello World!" << std::endl;
 }
