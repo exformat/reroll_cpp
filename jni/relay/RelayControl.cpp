@@ -1,5 +1,5 @@
 #include "RelayControl.h"
-#include "Arduino.h"
+#include "arduino/Arduino.h"
 
 RelayControl::RelayControl(int pin){
 	_pin = pin;
