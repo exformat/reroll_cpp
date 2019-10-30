@@ -1,0 +1,32 @@
+#######################################
+# Syntax Coloring Map For DriveControl
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+DriveControl	KEYWORD1
+DriveControl	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+tick	KEYWORD2
+stop_drive	KEYWORD2
+start_drive	KEYWORD2
+accel_drive	KEYWORD2
+smooth_start_drive	KEYWORD2
+smooth_start_drive	KEYWORD2
+smooth_stop_drive	KEYWORD2
+smooth_stop_drive	KEYWORD2
+smooth_accel_drive	KEYWORD2
+set_pin	KEYWORD2
+set_start_drive_value	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+
