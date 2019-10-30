@@ -1,54 +1,29 @@
-#include "drive/DriveControl.h"
-#include "relay/Relay.h"
-#include "GyverLibs/Encoder.h"
-#include "GyverLibs/GyverButton.h"
+#define CLK 11
+#define DT 10
+#define SW 3
+#define DRV_PIN 9
 
-int relay_pin = 12;
-int drive_control_pin = 11;
-int start_drive_value = 30;
+#include "GyverEncoder.h" 
+#include "DriveControl.h"
 
-int enc_pin_left = 10;
-int enc_pin_right = 9;
-int enc_pin_clk = 8;
-
-int btn_start_pin = 7;
-int btn_stop_pin = 6;
-
-Encoder encoder(enc_pin_clk, enc_pin_left, enc_pin_right, true, true);
-Relay relay(relay_pin);
-DriveControl drive_control(drive_control_pin, start_drive_value);
-GButton btn_start(btn_start_pin, HIGH_PULL, NORM_OPEN);
-GButton btn_stop(btn_stop_pin, HIGH_PULL, NORM_OPEN);
+Encoder encoder(CLK, DT, SW, TYPE1);
+DriveControl drive(DRV_PIN, 30);
 
 void setup(){
+	Serial.begin(9600);
+	Serial.println("hi war");
 	
+	encoder.setTickMode(AUTO);
+	drive.start_drive();
 }
 
 void loop(){
-	encoder.tick();
-	btn_start.tick();
-	btn_stop.tick();
-	
-	enc_drive_control();
-	btn_drive_control();
-}
-
-void btn_drive_control(){
-	if(btn_start.isPress()){
-		drive_control.start_drive();
+	if(encoder.isRight()){
+		Serial.println("Right");
+		drive.accel_drive(1);
 	}
-	if(btn_stop.isPress()){
-		drive_control.stop_drive();
-	}
-}
-
-void enc_drive_control(){
-	if(encoder.isTurn()){
-		if(encoder.isLeft()){
-			drive_control.accel(-1);
-		}
-		if(encoder.isRight()){
-			drive_control.accel(1);
-		}
+	if(enc1.isLeft()){
+		Serial.println("Left");
+		drive.accel_drive(-1);
 	}
 }
