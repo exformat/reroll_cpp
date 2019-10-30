@@ -1,23 +1,42 @@
+//encoder pins
 #define CLK 11
 #define DT 10
 #define SW 3
-#define DRV_PIN 9
+
+//drive control pins
+#define DRIVE_PIN 9
+
+//relay pins
+#define RELAY_PIN 8
+
+//button pins
+#define START_PIN 7
+#define STOP_PIN 6
+
+//sensor pins
+#define HALL_SENSOR_PIN 5
 
 #include "GyverEncoder.h" 
 #include "DriveControl.h"
+#include "Relay.h"
+#include "GyverButton.h"
+#include "HallSensor.h"
 
 Encoder encoder(CLK, DT, SW, TYPE1);
-DriveControl drive(DRV_PIN, 30);
+DriveControl drive(DRIVE_PIN, 30);
+Relay relay(RELAY_PIN);
+GButton btn_start(START_PIN);
+GButton btn_start(STOP_PIN);
+HSensor h_sensor(HALL_SENSOR_PIN);
 
 void setup(){
 	Serial.begin(9600);
-	Serial.println("hi war");
-	
-	encoder.setTickMode(AUTO);
-	drive.start_drive();
+	Serial.println("hi monkeycoder");
 }
 
 void loop(){
+	tick();
+	
 	if(encoder.isRight()){
 		Serial.println("Right");
 		drive.accel_drive(1);
@@ -26,4 +45,12 @@ void loop(){
 		Serial.println("Left");
 		drive.accel_drive(-1);
 	}
+}
+
+void tick(){
+	encoder.tick();
+	btn_start.tick();
+	btn_stop.tick();
+	drive.tick();
+	h_sensor.tick();
 }

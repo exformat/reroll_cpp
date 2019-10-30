@@ -10,6 +10,13 @@ class DriveControl{
 		int rpm = 0;
 		int _srt_drv_val = 0;
 		long tick_time = 0;
+		
+		/* smooth start drive
+		boolean smt_srt = false;
+		int smt_srt_step = 0;
+		int smt_drv_rpm = 100;
+		long smt_srt_oldtime = 0;
+		*/
 	
 	public:
 		DriveControl();

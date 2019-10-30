@@ -5,6 +5,7 @@ DriveControl::DriveControl(){}
 DriveControl::DriveControl(int pin, int start_drive_value){
 	_pin = pin;
 	_srt_drv_val = start_drive_value;
+	
 	pinMode(_pin, OUTPUT);
 }
 
@@ -13,19 +14,23 @@ void DriveControl::tick(){
 }
 	
 void DriveControl::stop_drive(){
-	analogWrite(_pin, 0);
-	_rpm = 0;
+	if(rpm > 0){
+		analogWrite(_pin, 0);
+		rpm = 0;
+	}
 }
 
 void DriveControl::start_drive(){
-	_rpm = _srt_drv_val;
-	analogWrite(_pin, _rpm);
+	if(rpm == 0){
+		rpm = _srt_drv_val;
+		analogWrite(_pin, rpm);
+	}
 }
 
 void DriveControl::accel_drive(int accel){
-	if(_rpm < MAX_RPM && _rpm > 0){
-		_rpm += accel;
-		analogWrite(_pin, _rpm);
+	if(rpm < MAX_RPM && rpm > 0){
+		rpm += accel;
+		analogWrite(_pin, rpm);
 	}
 }
 
