@@ -30,16 +30,28 @@ GButton btn_stop(STOP_PIN);
 HSensor h_sensor(HALL_SENSOR_PIN);
 
 boolean drive_work = false;
+int counter = 0;
 
 void setup(){
 	Serial.begin(9600);
 	Serial.println("hi monkeycoder");
+	
+	attachInterrupt(
+		digitalPinToInterrupt(
+			HALL_SENSOR_PIN, h_sensor_read, RISING));
 }
 
 void loop(){
 	tick();
+	drive_control();
 	
+	if(h_sensor.isTriggered()){
+		counter++;
+	}
+}
 
+void h_sensor_read(){
+	h_sensor.tick();
 }
 
 void drive_control(){
@@ -73,5 +85,5 @@ void tick(){
 	btn_start.tick();
 	btn_stop.tick();
 	drive.tick();
-	h_sensor.tick();
+	//h_sensor.tick();
 }
