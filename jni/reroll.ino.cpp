@@ -26,7 +26,7 @@ Encoder encoder(CLK, DT, SW, TYPE1);
 DriveControl drive(DRIVE_PIN, 30);
 Relay relay(RELAY_PIN);
 GButton btn_start(START_PIN);
-GButton btn_start(STOP_PIN);
+GButton btn_stop(STOP_PIN);
 HSensor h_sensor(HALL_SENSOR_PIN);
 
 void setup(){
