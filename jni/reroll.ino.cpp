@@ -38,7 +38,7 @@ void setup(){
 	
 	attachInterrupt(
 		digitalPinToInterrupt(
-			HALL_SENSOR_PIN, h_sensor_read, RISING));
+			HALL_SENSOR_PIN), h_sensor_read, RISING));
 }
 
 void loop(){
@@ -71,11 +71,13 @@ void drive_control(){
 	}
 	
 	if(encoder.isRight()){
-		Serial.println("Right");
+		Serial.print("encoder turn right ");
+		Serial.println("incr rpm");
 		drive.accel_drive(1);
 	}
 	if(enc1.isLeft()){
-		Serial.println("Left");
+		Serial.print("encoder turn left ");
+		Serial.println("decr rpm");
 		drive.accel_drive(-1);
 	}
 }
