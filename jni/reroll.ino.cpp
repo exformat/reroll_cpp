@@ -29,6 +29,8 @@ GButton btn_start(START_PIN);
 GButton btn_stop(STOP_PIN);
 HSensor h_sensor(HALL_SENSOR_PIN);
 
+boolean drive_work = false;
+
 void setup(){
 	Serial.begin(9600);
 	Serial.println("hi monkeycoder");
@@ -36,6 +38,25 @@ void setup(){
 
 void loop(){
 	tick();
+	
+
+}
+
+void drive_control(){
+	if(drive_work){
+		if(btn_stop.isPress()){
+			Serial.println("stop drive");
+			relay.off();
+			drive.stop_drive();
+		}
+	}
+	else{
+		if(btn_start.isPress()){
+			Serial.println("start drive");
+			relay.on();
+			drive.start_drive();
+		}
+	}
 	
 	if(encoder.isRight()){
 		Serial.println("Right");
