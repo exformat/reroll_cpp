@@ -12,28 +12,28 @@ void DriveControl::tick(){
 	tick_time = millis();
 }
 	
-void DriveControl::stop_drive(){
+void DriveControl::stop(){
 	analogWrite(_pin, 0);
 	_rpm = 0;
 }
 
-void DriveControl::start_drive(){
+void DriveControl::start(){
 	_rpm = _srt_drv_val;
 	analogWrite(_pin, _rpm);
 }
 
-void DriveControl::accel_drive(int accel){
+void DriveControl::accel(int accel){
 	if(_rpm < MAX_RPM && _rpm > 0){
 		_rpm += accel;
 		analogWrite(_pin, _rpm);
 	}
 }
 
-void DriveControl::smooth_start_drive(){}
-void DriveControl::smooth_start_drive(int duration){}
-void DriveControl::smooth_stop_drive(){}
-void DriveControl::smooth_stop_drive(int duration){}
-void DriveControl::smooth_accel_drive(int target_rpm, int duration){}
+void DriveControl::smooth_start(){}
+void DriveControl::smooth_start(int duration){}
+void DriveControl::smooth_stop(){}
+void DriveControl::smooth_stop(int duration){}
+void DriveControl::smooth_accel(int target_rpm, int duration){}
 
 void DriveControl::set_pin(int pin){
 	_pin = pin;
