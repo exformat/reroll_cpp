@@ -6,8 +6,21 @@ HSensor::HSensor(int pin){
 	_PIN = pin;
 	pinMode(pin, INPUT);
 }
+HSensor::HSensor(int pin, boolean type){
+	_PIN = pin;
+	_TYPE = type;
+	pinMode(pin, INPUT);
+}
+
+
 void HSensor::tick(){
-	state_sensor = digitalRead(_PIN) == HIGH ? true: false; 
+	if(_TYPE){
+		state_sensor = digitalRead(_PIN) == HIGH ? true: false; 
+	}
+	else{
+		state_sensor = true;
+	}
+
 }
 
 boolean HSensor::isTriggered(){
