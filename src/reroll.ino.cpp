@@ -39,6 +39,20 @@ void loop(){
 	encoder_control();
 }
 
+
+void button_control(){
+	if(btn_stp.isPress()){
+		relay.off();
+		drive.stop();
+		work = false;
+	}
+	if(btn_srt.isPress()){
+		relay.on();
+		drive.start();
+		work = true;
+	}
+}
+
 void encoder_control(){
 	if(work){
 		if(encoder.isLeft()){
