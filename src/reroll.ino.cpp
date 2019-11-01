@@ -21,6 +21,8 @@ HSensor sensor(HALL_SNR, TYPE2);
 
 boolean work = false;
 int target = 0;
+int material_counter = 0;
+const int STEP = 25;
 
 void setup(){
 	Serial.begin(9600);
@@ -35,10 +37,21 @@ void loop(){
 	tick();
 	test();
 	
-	
+	sensor_control();
 	encoder_control();
+	button_control();
 }
 
+void sensor_control(){
+	if(material_counter >= target){
+		relay.off();
+		drive.stop();
+		work = false;
+	}
+	if(sensor.isTriggered()){
+		material_counter += STEP;
+	}
+}
 
 void button_control(){
 	if(btn_stp.isPress()){
@@ -69,7 +82,7 @@ void encoder_control(){
 			Serial.println("target incr.");
 			target++;
 		}
-		if(encoder.isRight()){
+		if(encoder.isRight() && target > 0){
 			Serial.println("target decr.");
 			target--;
 		}
