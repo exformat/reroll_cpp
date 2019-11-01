@@ -7,9 +7,9 @@
 class DriveControl{
 	private:
 		int _pin;
-		int rpm = 0;
-		int _srt_drv_val = 0;
-		long tick_time = 0;
+		int _rpm;
+		int _srt_drv_val;
+		long tick_time;
 	
 	public:
 		DriveControl();
