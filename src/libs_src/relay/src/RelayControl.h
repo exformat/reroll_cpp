@@ -3,14 +3,14 @@
 
 #include "Arduino.h"
 
-class RelayControl{
+class Relay{
 	private:
 		int _pin;
 		boolean _switch;
 		boolean _on;
 	
 	public:
-		RelayControl(int pin);
+		Relay(int pin);
 		void switch_relay();
 		void on();
 		void off();

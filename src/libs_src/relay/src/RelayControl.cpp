@@ -1,28 +1,28 @@
 #include "RelayControl.h"
 #include "Arduino.h"
 
-RelayControl::RelayControl(int pin){
+Relay::Relay(int pin){
 	_pin = pin;
 	_on = false;
 	_switch = false;
 	pinMode(_pin, OUTPUT);
 }
 
-void RelayControl::on(){
+void Relay::on(){
 	if(!_on){
 		digitalWrite(_pin, HIGH);
 		_on = true;
 	}
 }
 
-void RelayControl::off(){
+void Relay::off(){
 	if(_on){
 		digitalWrite(_pin, LOW);
 		_on = false;
 	}
 }
 
-void RelayControl::switch_relay(){
+void Relay::switch_relay(){
 	if(_switch){
 		digitalWrite(_pin, LOW);
 		_switch = false;
@@ -33,6 +33,6 @@ void RelayControl::switch_relay(){
 	}
 }
 
-boolean RelayControl::is_switch(){
+boolean Relay::is_switch(){
 	return _switch;
 }
