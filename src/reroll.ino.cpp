@@ -17,9 +17,10 @@ Encoder encoder(ENC_L_PIN, ENC_R_PIN, 4, TYPE1);
 Relay relay(RL_PIN);
 GButton btn_stp(BTN_STP);
 GButton btn_srt(BTN_SRT);
-HSensor sensor(HALL_SNR);
+HSensor sensor(HALL_SNR, TYPE2);
 
-
+boolean work = false;
+int target = 0;
 
 void setup(){
 	Serial.begin(9600);
@@ -33,6 +34,32 @@ void setup(){
 void loop(){
 	tick();
 	test();
+	
+	
+	encoder_control();
+}
+
+void encoder_control(){
+	if(work){
+		if(encoder.isLeft()){
+			Serial.println("accel incr.");
+			drive.accel(1);
+		}
+		if(encoder.isRight()){
+			Serial.println("accel decr.");
+			drive.accel(-1);
+		}
+	}
+	else{
+		if(encoder.isLeft()){
+			Serial.println("target incr.");
+			target++;
+		}
+		if(encoder.isRight()){
+			Serial.println("target decr.");
+			target--;
+		}
+	}
 }
 
 void sensor_tick(){
