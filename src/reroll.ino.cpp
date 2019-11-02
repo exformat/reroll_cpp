@@ -20,16 +20,20 @@ GButton btn_srt(BTN_SRT);
 HSensor sensor(HALL_SNR, TYPE2);
 
 boolean work = false;
+
 long tick_time = 0;
 long old_tick_time = 0;
-int delta_time = 0;
+long delta_time = 0;
+long delta_counter = 0;
 
 int target = 0;
 int material_counter = 0;
+int step_counter = 0;
 const int STEP = 25;
 const int MAT_STEP = 200;
 
 float mpm = 0;
+const int time_step = 200;
 
 void setup(){
 	Serial.begin(9600);
@@ -47,11 +51,20 @@ void loop(){
 	
 	tick();
 	//test();
-	
+	mpm_control();
 	material_control();
 	sensor_control();
 	encoder_control();
 	button_control();
+}
+
+void mpm_control(){
+	if(delta_counter > time_step){
+		//calc meter peer minut
+		mpm = step_counter * STEP * (1000 / time_step) * 60 / 1000;
+		step_counter = 0;
+		delta_counter = 0;
+	}
 }
 
 void time_control(){
@@ -59,6 +72,7 @@ void time_control(){
 		old_tick_time = tick_time;
 		tick_time = millis();
 		delta_time = tick_time - old_tick_time;
+		delta_counter += delta_time;
 	}
 }
 
@@ -73,6 +87,7 @@ void material_control(){
 void sensor_control(){
 	if(sensor.isTriggered()){
 		material_counter += STEP;
+		step_counter += STEP;
 	}
 }
 
