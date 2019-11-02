@@ -20,9 +20,16 @@ GButton btn_srt(BTN_SRT);
 HSensor sensor(HALL_SNR, TYPE2);
 
 boolean work = false;
+long tick_time = 0;
+long old_tick_time = 0;
+int delta_time = 0;
+
 int target = 0;
 int material_counter = 0;
 const int STEP = 25;
+const int MAT_STEP = 200;
+
+float mpm = 0;
 
 void setup(){
 	Serial.begin(9600);
@@ -31,23 +38,39 @@ void setup(){
 	attachInterrupt(digitalPinToInterrupt(HALL_SNR), sensor_tick, RISING);
 				
 	pinMode(13, OUTPUT);
+	tick_time = millis();
 }
 
 void loop(){
-	tick();
-	test();
+	time_control();
 	
+	
+	tick();
+	//test();
+	
+	material_control();
 	sensor_control();
 	encoder_control();
 	button_control();
 }
 
-void sensor_control(){
+void time_control(){
+	if(tick_time > old_tick_time){
+		old_tick_time = tick_time;
+		tick_time = millis();
+		delta_time = tick_time - old_tick_time;
+	}
+}
+
+void material_control(){
 	if(material_counter >= target){
 		relay.off();
 		drive.stop();
 		work = false;
 	}
+}
+
+void sensor_control(){
 	if(sensor.isTriggered()){
 		material_counter += STEP;
 	}
@@ -80,11 +103,11 @@ void encoder_control(){
 	else{
 		if(encoder.isLeft()){
 			Serial.println("target incr.");
-			target++;
+			target += MAT_STEP;
 		}
-		if(encoder.isRight() && target > 0){
+		if(encoder.isRight() && target > MAT_STEP){
 			Serial.println("target decr.");
-			target--;
+			target -= MAT_STEP;
 		}
 	}
 }
