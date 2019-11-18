@@ -34,6 +34,8 @@ const int STEP = 25;
 const int MAT_STEP = 200;
 
 float mpm = 0;
+int target_mpm = 0;
+const int MAX_MPM = 100;
 
 void setup(){
 	Serial.begin(9600);
@@ -45,11 +47,11 @@ void setup(){
 void loop(){
 	time_control();
 
-	//tick();
-	//mpm_control();
-	//material_control();
-	//encoder_control();
-	//button_control();
+	tick();
+	mpm_control();
+	material_control();
+	encoder_control();
+	button_control();
 }
 
 void mpm_control(){
@@ -66,6 +68,13 @@ void mpm_control(){
 	//calculation of meters per minute
     float f = delta_strg;
     mpm = STEP / (f / 1000 / 60) / 1000;
+	
+	if(mpm < target_mpm){
+		drive.accel(1);
+	}
+	else{
+		drive.accel(-1);
+	}
 }
 
 void time_control(){
@@ -94,10 +103,12 @@ void sensor_control(){
 void button_control(){
 	if(btn_srt.isPress()){
         if(work){
+			relay.off();
 			drive.stop();
 			work = false;
         }
         else{
+			relay.on();
 			drive.start();
 			work = true;
         }
@@ -108,11 +119,11 @@ void encoder_control(){
 	if(work){
 		if(encoder.isRight()){
 			Serial.println("accel incr.");
-			drive.accel(1);
+			target_mpm = target_mpm < MAX_MPM ? target_mpm++ : MAX_MPM;
 		}
 		if(encoder.isLeft()){
 			Serial.println("accel decr.");
-			drive.accel(-1);
+			target_mpm = target_mpm > 0 ? target_mpm-- : 0;
 		}
 	}
 	else{
