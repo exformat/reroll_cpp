@@ -2,7 +2,6 @@
 #include "GyverEncoder.h"
 #include "RelayControl.h"
 #include "GyverButton.h"
-#include "HallSensor.h"
 
 #define DRV_PIN   11
 #define ENC_L_PIN 4
@@ -17,63 +16,64 @@ Encoder encoder(ENC_L_PIN, ENC_R_PIN, 6, TYPE2);
 Relay relay(RL_PIN);
 GButton btn_stp(BTN_STP);
 GButton btn_srt(BTN_SRT);
-HSensor sensor(HALL_SNR, TYPE2);
 
 boolean work = false;
+volatile boolean sensor_trig = false;
+long strg_time = 0;
+long old_strg_time = 1;
+long delta_strg = 1;
 
 long tick_time = 0;
-long old_tick_time = 0;
+long old_tick_time = 1;
 long delta_time = 0;
-long delta_counter = 0;
 
 int target = 0;
-int material_counter = 0;
-int step_counter = 0;
-const float STEP = 28.27;
+float material_counter = 0;
+float step_counter = 0;
+const int STEP = 25;
 const int MAT_STEP = 200;
 
 float mpm = 0;
-const int time_step = 200;
 
-//================================
 void setup(){
 	Serial.begin(9600);
-	Serial.println("hello world!");
-	
-	attachInterrupt(digitalPinToInterrupt(HALL_SNR), sensor_tick, RISING);
-	
+	Serial.println("hello, im iroller!");
+	attachInterrupt(digitalPinToInterrupt(HALL_SNR), sensor_control, RISING);
 	tick_time = millis();
 }
 
 void loop(){
-	tick();
-	
 	time_control();
-	//test();
-	mpm_control();
-	material_control();
-	sensor_control();
-	encoder_control();
-	button_control();
+
+	//tick();
+	//mpm_control();
+	//material_control();
+	//encoder_control();
+	//button_control();
 }
 
-//========================
-
 void mpm_control(){
-	if(delta_counter > time_step){
-		//calc meter peer minut
-		mpm = step_counter * STEP * (1000 / time_step) * 60 / 1000;
-		step_counter = 0;
-		delta_counter = 0;
-	}
+	//calculation of the time between sensor triggering
+	if(sensor_trig){
+        material_counter += STEP;
+        step_counter++;
+
+        old_strg_time = strg_time;
+        strg_time = tick_time;
+        delta_strg = strg_time - old_strg_time;
+        trg = false;
+    }
+	//calculation of meters per minute
+    float f = delta_trg;
+    mpm = STEP / (f / 1000 / 60) / 1000;
 }
 
 void time_control(){
+    tick_time = millis();
+    
 	if(tick_time > old_tick_time){
-		old_tick_time = tick_time;
-		tick_time = millis();
 		delta_time = tick_time - old_tick_time;
-		delta_counter += delta_time;
+		old_tick_time = tick_time;
 	}
 }
 
@@ -86,31 +86,21 @@ void material_control(){
 }
 
 void sensor_control(){
-	if(sensor.isTriggered()){
-		material_counter += STEP;
-		step_counter += STEP;
-	}
+	if(!sensor_trig){
+		sensor_trig = true;
+    }
 }
 
 void button_control(){
-    
 	if(btn_srt.isPress()){
         if(work){
-             Serial.println("button stop!");
-		relay.off();
-		drive.stop();
-		work = false;
+			drive.stop();
+			work = false;
         }
         else{
-            Serial.println("start");
-		relay.on();
-		drive.start();
-		work = true;
+			drive.start();
+			work = true;
         }
-  
-	}
-	if(btn_srt.isPress()){
-  
 	}
 }
 
@@ -137,54 +127,10 @@ void encoder_control(){
 	}
 }
 
-void sensor_tick(){
-	sensor.tick();
-}
-
 void tick(){
 	drive.tick();
 	encoder.tick();
 	btn_stp.tick();
 	btn_srt.tick();
-	//sensor.tick();
-}
-
-void test(){
-		/* //test hall sensor in intrrupt
-	if(sensor.isTriggered()){
-		relay.switch_relay();
-	}
-				
-	/* //test button
-	if(btn.isPress()){
-		relay.switch_relay();
-	}
-	if(btn.isRelease()){
-		relay.switch_relay();
-	}
-				
-	/* //test relay
-	relay.off();		
-	relay.switch_relay();
-	if(relay.is_switch()){
-		Serial.println("relay switch");
-	}
-	delay(500);
-				*/
-	 //test encoder
-    /*
-	drive.tick();
-	encoder.tick();
-	if(encoder.isLeft()){
-		Serial.println("left");
-		digitalWrite(13, HIGH);
-  drive.accel(-1);
-	}
-	if(encoder.isRight()){
-		Serial.println("right");
-		digitalWrite(13, LOW);
-  drive.accel(1);
-	}
-    */
 }
 
