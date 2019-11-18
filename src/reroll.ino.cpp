@@ -29,7 +29,7 @@ long delta_counter = 0;
 int target = 0;
 int material_counter = 0;
 int step_counter = 0;
-const int STEP = 25;
+const float STEP = 28.27;
 const int MAT_STEP = 200;
 
 float mpm = 0;
