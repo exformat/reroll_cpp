@@ -61,10 +61,10 @@ void mpm_control(){
         old_strg_time = strg_time;
         strg_time = tick_time;
         delta_strg = strg_time - old_strg_time;
-        trg = false;
+        sensor_trig = false;
     }
 	//calculation of meters per minute
-    float f = delta_trg;
+    float f = delta_strg;
     mpm = STEP / (f / 1000 / 60) / 1000;
 }
 
