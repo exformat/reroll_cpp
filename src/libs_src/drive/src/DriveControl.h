@@ -12,13 +12,13 @@ class DriveControl{
 		int _start_pwm;
 		long tick_time;
 		long old_tick_time;
-		float delta_time;
+        long delta_time;
 		
-		boolean smooth = false;
-		float target_smoot_timer = 0;
-		float smooth_timer = 0;
-		float smooth_step = 0;
-		int smoorh_pwm_step = 0;
+		bool smooth = false;
+		long target_smooth_timer = 0;
+        long smooth_timer = 0;
+        long smooth_step = 0;
+		int smooth_pwm_step = 0;
 		
 		void smoothFunction();
 	
@@ -29,11 +29,11 @@ class DriveControl{
 		void stop();
 		void start();
 		void accel(int pwm);
-		void smooth_start();
-		void smooth_start(int duration);
+		void smoothStart();
+		void smoothStart(int duration);
 		void smoothStop();
 		void smoothStop(int duration);
-		void smooth_accel(int pwm, int duration);
+		void smoothAccel(int pwm, int duration);
 		void set_pin(int pin);
 		void set_start_pwm(int val);
 };
