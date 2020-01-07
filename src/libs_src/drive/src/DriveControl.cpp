@@ -8,6 +8,7 @@ DriveControl::DriveControl(int pin, int start_pwm){
 	old_tick_time = 0;
 	tick_time = 0;
 	delta_time = 0;
+	_pwm = 0; 
 	pinMode(_pin, OUTPUT);
 }
 
@@ -39,7 +40,6 @@ void DriveControl::accel(int pwm){
 }
 
 void DriveControl::smoothFunction(){
-	smooth_timer -= delta_time;
 	target_smooth_timer += delta_time;
 	if(target_pwm > _pwm){
 		smooth_pwm_step = 1;
@@ -49,42 +49,48 @@ void DriveControl::smoothFunction(){
 	}
 	if(smooth_timer > 0){
 		if(target_smooth_timer >= smooth_step){
+			smooth_timer -= target_smooth_timer;
 			accel(smooth_pwm_step);
 			target_smooth_timer = 0;
 		}
+	}
+	else{
+		smooth_timer = 0;
+		smooth = false;
 	}
 }
 
 
 void DriveControl::smoothStart(){
-	target_pwm = _start_pwm;
-	smooth_timer = 2000;
-	smooth_step = target_pwm / (smooth_timer * 1000);
-	smooth = true;
+	smoothStart(2);
 }
 
 void DriveControl::smoothStart(int duration){
 	target_pwm = _start_pwm;
 	smooth_timer = duration * 1000;
-	smooth_step = target_pwm / (smooth_timer * 1000);
+	smooth_step = smooth_timer / target_pwm;
 	smooth = true;
 }
 void DriveControl::smoothStop(){
-	target_pwm = 0;
-	smooth_timer = 2000;
-	smooth_step = target_pwm / (smooth_timer * 1000);
-	smooth = true;
+	smoothStop(2);
 }
 void DriveControl::smoothStop(int duration){
 	target_pwm = 0;
 	smooth_timer = duration * 1000;
-	smooth_step = target_pwm / (smooth_timer * 1000);
+	smooth_step = smooth_timer / _pwm;
 	smooth = true;
 }
 void DriveControl::smoothAccel(int pwm, int duration){
 	target_pwm = pwm;
+	int tmp_pwm = 0;
+	if(pwm < _pwm){
+		tmp_pwm = _pwm - pwm;
+	}
+	else{
+		tmp_pwm = pwm - _pwm;
+	}
 	smooth_timer = duration * 1000;
-	smooth_step = target_pwm / (smooth_timer * 1000);
+	smooth_step = smooth_timer / tmp_pwm;
 	smooth = true;
 }
 
