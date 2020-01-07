@@ -1,19 +1,19 @@
 #include "HallSensor.h"
 #include "Arduino.h"
 
-HSensor::HSensor(){}
-HSensor::HSensor(int pin){
+Sensor::Sensor(){}
+Sensor::Sensor(int pin){
 	_PIN = pin;
 	pinMode(pin, INPUT);
 }
-HSensor::HSensor(int pin, boolean type){
+Sensor::Sensor(int pin, boolean type){
 	_PIN = pin;
 	_TYPE = type;
 	pinMode(pin, INPUT);
 }
 
 
-void HSensor::tick(){
+void Sensor::tick(){
 	if(_TYPE){
 		state_sensor = digitalRead(_PIN) == HIGH ? true: false; 
 	}
@@ -23,7 +23,7 @@ void HSensor::tick(){
 
 }
 
-boolean HSensor::isTriggered(){
+boolean Sensor::isTriggered(){
 	if(state_sensor){
 		state_sensor = false;
 		return true;

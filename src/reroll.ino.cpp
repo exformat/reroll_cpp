@@ -50,7 +50,7 @@ int target = 3000;
 float material_counter = 0;
 float step_counter = 0;
 const float STEP = 27.75f;
-const int MAT_STEP = 200;
+const int MAT_STEP = 315;
 
 int rpm = 0;
 
@@ -84,26 +84,7 @@ void loop() {
   //button_control();
 }
 
-void print() {
 
-  lcd.setCursor(0, 0);
-  lcd.print(mpm_str);
-  lcd.setCursor(5, 0);
-  lcd.print(rpm);
-  lcd.setCursor(0, 1);
-  lcd.print(trg_str);
-  lcd.setCursor(5, 1);
-  lcd.print(target);
-
-  if (lcd_time > 1000) {
-    // Serial.println(mpm);
-    lcd_time = 0;
-
-
-
-  }
-  lcd_time += delta_time;
-}
 
 
 
@@ -221,6 +202,27 @@ void mpm_control() {
   delta_strg = tick_time - old_strg_time;
   float f = delta_strg;
   mpm = STEP / (f / 1000 / 60) / 1000;
+}
+
+void print() {
+
+  lcd.setCursor(0, 0);
+  lcd.print(mpm_str);
+  lcd.setCursor(5, 0);
+  lcd.print(rpm);
+  lcd.setCursor(0, 1);
+  lcd.print(trg_str);
+  lcd.setCursor(5, 1);
+  lcd.print(target);
+
+  if (lcd_time > 1000) {
+    // Serial.println(mpm);
+    lcd_time = 0;
+
+
+
+  }
+  lcd_time += delta_time;
 }
 
 void tick() {
