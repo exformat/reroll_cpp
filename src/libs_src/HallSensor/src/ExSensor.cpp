@@ -1,4 +1,4 @@
-#include "HallSensor.h"
+#include "ExSensor.h"
 #include "Arduino.h"
 
 Sensor::Sensor(){}
