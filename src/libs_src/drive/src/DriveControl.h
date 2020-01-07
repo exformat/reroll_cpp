@@ -12,12 +12,12 @@ class DriveControl{
 		int _start_pwm;
 		long tick_time;
 		long old_tick_time;
-        long delta_time;
+        	long delta_time;
 		
 		bool smooth = false;
 		long target_smooth_timer = 0;
-        long smooth_timer = 0;
-        long smooth_step = 0;
+        	long smooth_timer = 0;
+        	long smooth_step = 0;
 		int smooth_pwm_step = 0;
 		
 		void smoothFunction();
