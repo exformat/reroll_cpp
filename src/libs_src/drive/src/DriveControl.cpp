@@ -1,8 +1,5 @@
 #include "DriveControl.h"
 #include "Arduino.h"
-#include <cmath>
-
-using namespace std;
 
 DriveControl::DriveControl(){}
 DriveControl::DriveControl(int pin, int start_pwm){
@@ -17,7 +14,7 @@ DriveControl::DriveControl(int pin, int start_pwm){
 void DriveControl::tick(){
 	old_tick_time = tick_time;
 	tick_time = millis();
-	delta_time = (tick_time - old_tick_time) / 1000;
+	delta_time = tick_time - old_tick_time;
 	
 	if(smooth){
 		smoothFunction();
@@ -30,7 +27,7 @@ void DriveControl::stop(){
 }
 
 void DriveControl::start(){
-	_pwm = _srt_drv_val;
+	_pwm = _start_pwm;
 	analogWrite(_pin, _pwm);
 }
 
@@ -43,50 +40,50 @@ void DriveControl::accel(int pwm){
 
 void DriveControl::smoothFunction(){
 	smooth_timer -= delta_time;
-	target_smoot_timer += delta_time;
-	if(target_pwm > 0){
-		smoorh_pwm_step = 1;
+	target_smooth_timer += delta_time;
+	if(target_pwm > _pwm){
+		smooth_pwm_step = 1;
 	}
 	else{
-		smoorh_pwm_step = -1;
+		smooth_pwm_step = -1;
 	}
 	if(smooth_timer > 0){
 		if(target_smooth_timer >= smooth_step){
-			accel(smoorh_pwm_step);
+			accel(smooth_pwm_step);
 			target_smooth_timer = 0;
 		}
 	}
 }
 
 
-void DriveControl::smooth_start(){
+void DriveControl::smoothStart(){
 	target_pwm = _start_pwm;
-	smooth_timer = 2;
+	smooth_timer = 2000;
 	smooth_step = target_pwm / (smooth_timer * 1000);
 	smooth = true;
 }
 
-void DriveControl::smooth_start(int duration){
-	target_pwm = _srt_drv_val;
-	smooth_timer = duration;
+void DriveControl::smoothStart(int duration){
+	target_pwm = _start_pwm;
+	smooth_timer = duration * 1000;
 	smooth_step = target_pwm / (smooth_timer * 1000);
 	smooth = true;
 }
-void DriveControl::smooth_stop(){
+void DriveControl::smoothStop(){
 	target_pwm = 0;
-	smooth_timer = 2;
+	smooth_timer = 2000;
 	smooth_step = target_pwm / (smooth_timer * 1000);
 	smooth = true;
 }
-void DriveControl::smooth_stop(int duration){
+void DriveControl::smoothStop(int duration){
 	target_pwm = 0;
-	smoorh_timer = duration;
+	smooth_timer = duration * 1000;
 	smooth_step = target_pwm / (smooth_timer * 1000);
 	smooth = true;
 }
-void DriveControl::smooth_accel(int pwm, int duration){
+void DriveControl::smoothAccel(int pwm, int duration){
 	target_pwm = pwm;
-	smootj_timer = duration;
+	smooth_timer = duration * 1000;
 	smooth_step = target_pwm / (smooth_timer * 1000);
 	smooth = true;
 }
