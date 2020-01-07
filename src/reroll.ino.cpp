@@ -75,13 +75,10 @@ void setup() {
 
 void loop() {
   time_control();
-
   tick();
   mpm_control();
   print();
-
-
-
+  
   material_control();
   encoder_control();
   //button_control();
@@ -114,6 +111,7 @@ boolean brake = false;
 void material_control() {
   if(target - material_counter <= 500 && !brake){
     roll_drive.smoothStop();
+    brake = true;
   }
   
   if (material_counter >= target) {
@@ -144,9 +142,10 @@ void button_control() {
 boolean target_setup = false;
 void encoder_control() {
   if (!target_setup || work) {
-    if (encoder.isRight() && rpm < 250) { //acceleration increment
+    if (encoder.isRight()) { //acceleration increment
       lcd.clear();
       rpm++;
+      roll_drive.accel(1);
       punch_drive.accel(1);
       Serial.println("accel incr.");
     }
