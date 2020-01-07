@@ -2,6 +2,7 @@
 #include "GyverEncoder.h"
 #include "RelayControl.h"
 #include "GyverButton.h"
+#include "ExSensor.h"
 
 #include "Wire.h"
 #include "LiquidCrystal_I2C.h"
@@ -22,15 +23,15 @@
 #define UP_SNR_PIN 11
 #define DN_SNR_PIN 12
 
-DriveControl roll_drive(DRV_PIN, 30);
-DriveControl punch_drive(DRV2_PIN, 30);
+DriveControl roll_drive(DRV_PIN, 10);
+DriveControl punch_drive(DRV2_PIN, 10);
 
 Encoder encoder(ENC_CLK_PIN, ENC_DT_PIN, ENC_SW_PIN, TYPE1);
 //Relay relay(RL_PIN);
 GButton btn_stp(BTN_STP);
 GButton btn_srt(BTN_SRT);
-GButton up_sensor(UP_SNR_PIN);
-GButton dn_sensor(DN_SNR_PIN);
+ExSensor up_sensor(UP_SNR_PIN);
+ExSensor dn_sensor(DN_SNR_PIN);
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
@@ -46,7 +47,7 @@ long delta_time = 0;
 
 long lcd_time = 0;
 
-int target = 3000;
+int target = 3;
 float material_counter = 0;
 float step_counter = 0;
 const float STEP = 27.75f;
@@ -66,6 +67,8 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(HALL_SNR), sensor_control, RISING);
   tick_time = millis();
 
+  target *= 1000;
+  
   lcd.init();
   lcd.backlight();
   //lcd.setCursor(0, 0);
@@ -81,6 +84,7 @@ void loop() {
   
   material_control();
   encoder_control();
+  drives_control();
   //button_control();
 }
 
@@ -113,7 +117,9 @@ void button_control() {
     }
     else {
       roll_drive.start();
+	  roll_drive.smoothAccel(150, 10);
       punch_drive.start();
+	  punch_drive.smoothAccel(100, 5);
       work = true;
     }
   }
@@ -126,7 +132,7 @@ void encoder_control() {
     if (encoder.isRight()) { //acceleration increment
       lcd.clear();
       rpm++;
-      roll_drive.accel(1);
+      //roll_drive.accel(1);
       punch_drive.accel(1);
       Serial.println("accel incr.");
     }
@@ -134,7 +140,7 @@ void encoder_control() {
       lcd.clear();
       rpm--;
       punch_drive.accel(-1);
-      roll_drive.accel(-1);
+      //roll_drive.accel(-1);
       Serial.println("accel decr.");
     }
   }
@@ -185,6 +191,8 @@ void time_control() {
   if (tick_time > old_tick_time) {
     delta_time = tick_time - old_tick_time;
     old_tick_time = tick_time;
+	Serial.print("delta time: ");
+	Serial.println(delta_time);
   }
 }
 

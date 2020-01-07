@@ -14,12 +14,12 @@ Sensor::Sensor(int pin, boolean type){
 
 
 void Sensor::tick(){
-	if(_TYPE){
+	//if(_TYPE){
 		state_sensor = digitalRead(_PIN) == HIGH ? true: false; 
-	}
-	else{
-		state_sensor = true;
-	}
+	//}
+	//else{
+		//state_sensor = true;
+	//}
 
 }
 
